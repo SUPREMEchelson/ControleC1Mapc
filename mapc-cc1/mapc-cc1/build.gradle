@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'mapc.controles'
+version '0.1'
+
+sourceCompatibility = 11
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile 'org.testng:testng:7.3.0'
+}
+
+application {
+    // Define the main class for the application.
+    mainClassName = 'client.App'
+}
+
+task testTestNG(type: Test) {
+    useTestNG() {
+        options.suites 'src/test/resources/testng.xml'
+    }
+}
+
+test {
+    dependsOn 'testTestNG'
+    ignoreFailures = true
+}
+
+jar {
+    from(configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }) {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+
+    manifest {
+        attributes 'Implementation-Title': 'MAPC-CC1',
+                'Implementation-Version': archiveVersion,
+                'Built-By': 'Modelisation architecturale et patrons de conception',
+                'Built-Date': new Date(),
+                'Built-JDK': System.getProperty('java.version'),
+                'Main-Class': mainClassName
+    }
+}
