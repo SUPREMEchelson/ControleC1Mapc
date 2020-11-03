@@ -1,0 +1,10 @@
+@startuml
+
+
+Package client{
+class App{
+{static} String main()
+}
+
+
+@enduml
