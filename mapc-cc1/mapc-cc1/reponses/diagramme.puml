@@ -1,0 +1,81 @@
+@startuml
+
+
+namespace diagramme{
+
+namespace cloudproviders{
+
+}
+namespace impl{
+}
+
+namespace componentprovider{
+namespace api{
+}
+namespace impl{
+}
+
+
+}
+
+namespace exception{
+
+
+}
+title __IO's Class Diagram__\n
+    namespace io {
+
+      }
+
+ namespace client{
+ class App{
+ {static} String main()
+ }
+
+
+         namespace registry {
+
+        }
+
+
+          namespace  serviceprovider{
+            namespace serviceprovider.api {
+
+              }
+
+             namespace serviceprovider.impl {
+
+                }
+
+
+            }
+
+
+            namespace visitable{
+                namespace visitable.api {
+                 }
+
+                     namespace isitable.impl {
+
+                   }
+                   }
+
+
+  namespace  visitor{
+    namespace visitor.api {
+
+    }
+
+  }
+
+    namespace  vmosprovider{
+      namespace vmosprovider.api {
+
+        }
+
+    }
+
+
+
+
+@enduml

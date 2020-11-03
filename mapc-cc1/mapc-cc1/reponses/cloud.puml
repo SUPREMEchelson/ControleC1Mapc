@@ -1,0 +1,129 @@
+@startuml
+namespace cloud{
+
+namespace cloud.api{
+Interface Cloud extends NamedElement {
+ +getPlans(): Set<DeploymentPlan>
+ +deployPlan(DeploymentPlan plan): boolean
+ +startPlan(DeploymentPlan plan): boolean
+ +stopPlan(DeploymentPlan plan): boolean
+ +removePlan(DeploymentPlan plan): boolean
+}
+
+Interface Component extends Resource, RunnableElement{
+ -getComponentType(): ComponentType
+}
+
+Interface ComponentType extends Resource{
+- componentTypeKey() String
++  createComponent(String name) Component
+}
+
+Interface ComputeNode extends Resource, RunnableElement{
+    addVMachine(VirtualMachine machine) : boolean
+    removeVMachine(VirtualMachine machine) : boolean
+    getVMachines() : Set<VirtualMachine>
+    boolean shutDownVMachine(VirtualMachine machine);
+    boolean startVirtualMachine(VirtualMachine machine);
+}
+
+Interface DeploymentPlan extends NamedElement, RunnableElement{
+   +newStandardComputeNode(StandardComputeNodeSize size, String name) :ComputeNode
+   +newPersonalizedComputeNode(int nbCPU, int memory, String name) :ComputeNode
+   +newVirtualMachine(String name) : VirtualMachine
+   +newService(String key, String name): Service
+   +newComponent(String key, String name): Component
+   +getNodes() :Set<ComputeNode>
+   +getNode(String name) :Optional<ComputeNode>
+   +deployVMonNode(VirtualMachine vm, ComputeNode node) : DeploymentPlan
+   +deployServiceOnVm(Service service, VirtualMachine vm) :DeploymentPlan
+   +attachComponentToService(Component component, Service service) : DeploymentPlan
+   -isValid() :boolean
+   -getReport() :DeploymentPlanReport;
+}
+
+Interface DeploymentPlanReport{
+ -exceptions() :List<Exception>
+ -addException(Exception e) :boolean
+ -messages() :List<String>
+}
+
+Interface DeploymentPlanShutdown{
+   + setNext(DeploymentPlanShutdown handler) :void
+    +stop(DeploymentPlan plan) :boolean
+}
+
+interface DeploymentPlanStartup {
+     setNext(DeploymentPlanStartup handler) :void
+     start(DeploymentPlan plan, boolean bestEffort) boolean;
+
+}
+
+Interface NamedElement extends Visitable {
+     -name() :String
+}
+
+Interface Resource extends NamedElement {
+        getNbCPU() :int
+        getMemory() : int
+        setNbCPU(int nbCPU) : void
+        setMemory(int memory) : void
+}
+interface RunnableElement {
+     start() :boolean
+     stop() : boolean
+     isRunning() : boolean
+    restart() default boolean
+    }
+
+  Interface Service extends Resource, RunnableElement{
+        getComponent() Component
+         setComponent(Component component) void
+         getServiceType() ServiceType
+    }
+
+Interface ServiceType extends NamedElement {
+     serviceTypeKey() : String
+     createService(String name) : Service
+    }
+
+    enum StandardComputeNodeSize {
+        XSMALL(1, 2), SMALL(2, 4), MEDIUM(2, 8),
+        MEDIUM_LARGE(4, 16), LARGE(6, 32), XLARGE(8, 64);
+        private final int nbCPU;
+        private final int memory;
+        StandardComputeNodeSize(int nbCPU, int memory)
+        -getNbCPU() int
+        getMemory() int
+
+    }
+
+    Interface VirtualMachine extends Resource, RunnableElement {
+
+         setOS(VmOSName os) :void
+
+         getOS() : VmOSName
+
+         addService(Service service) : boolean
+
+         removeService(Service service) :boolean
+
+         getServices() : Set<Service>
+    }
+
+    }
+    namespace impl{
+
+    namespace base{
+    }
+    namespace shutdown{
+    }
+    namespace startup{
+    }
+
+    }
+
+
+
+
+@enduml
